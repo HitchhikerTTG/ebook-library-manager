@@ -15,7 +15,7 @@ if (!file_exists($metadata_file)) {
 }
 
 $metadata = json_decode(file_get_contents($metadata_file), true);
-$file_path = '_ksiazki/' . $metadata['filename'];
+$file_path = '/nirski/_ksiazki/' . $metadata['filename'];
 
 if (!file_exists($file_path)) {
     flash_message('Book file not found');

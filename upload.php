@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $book_id = uniqid();
     $filename = $book_id . '.mobi';
     
-    if (move_uploaded_file($book['tmp_name'], '_ksiazki/' . $filename)) {
+    if (move_uploaded_file($book['tmp_name'], '/nirski/_ksiazki/' . $filename)) {
         $metadata = [
             'title' => $_POST['title'] ?? 'Untitled',
             'author_first' => $_POST['author_first'] ?? '',

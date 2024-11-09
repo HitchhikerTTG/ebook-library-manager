@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'your-secret-key-here')
 
 # Create necessary directories if they don't exist
-os.makedirs('books', exist_ok=True)
+os.makedirs('/nirski/_ksiazki', exist_ok=True)
 os.makedirs('metadata', exist_ok=True)
 
 @app.route('/')
@@ -37,7 +37,7 @@ def upload():
         return redirect(url_for('library'))
     
     book_id = str(uuid.uuid4())
-    book.save(os.path.join('books', f'{book_id}.mobi'))
+    book.save(os.path.join('/nirski/_ksiazki', f'{book_id}.mobi'))
     
     metadata = {
         'title': request.form.get('title', 'Untitled'),
@@ -60,7 +60,7 @@ def download(book_id):
     try:
         with open(os.path.join('metadata', f'{book_id}.json')) as f:
             metadata = json.load(f)
-        return send_from_directory('books', metadata['filename'])
+        return send_from_directory('/nirski/_ksiazki', metadata['filename'])
     except:
         flash('Book not found')
         return redirect(url_for('library'))
@@ -98,7 +98,7 @@ def delete_book(book_id):
         with open(os.path.join('metadata', f'{book_id}.json')) as f:
             metadata = json.load(f)
         
-        os.remove(os.path.join('books', metadata['filename']))
+        os.remove(os.path.join('/nirski/_ksiazki', metadata['filename']))
         os.remove(os.path.join('metadata', f'{book_id}.json'))
         flash('Book deleted successfully')
     except:
