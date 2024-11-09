@@ -27,9 +27,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Select All functionality for metadata management
     const selectAllCheckbox = document.getElementById('selectAll');
-    if (selectAllCheckbox) {
+    const checkboxes = document.getElementsByName('selected_books[]');
+    
+    if (selectAllCheckbox && checkboxes.length > 0) {
         selectAllCheckbox.addEventListener('change', function() {
-            const checkboxes = document.getElementsByName('selected_books[]');
             checkboxes.forEach(checkbox => checkbox.checked = this.checked);
         });
     }

@@ -27,6 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]);
     
     file_put_contents($metadata_file, json_encode($book, JSON_PRETTY_PRINT));
+    
+    // Generate static HTML for the updated book
+    require_once 'generate_static_html.php';
+    generate_static_html_for_book($book_id, $book);
+    
     flash_message('Metadata updated successfully');
     header('Location: /');
     exit;

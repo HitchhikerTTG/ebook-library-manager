@@ -38,6 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             json_encode($metadata, JSON_PRETTY_PRINT)
         );
         
+        // Generate static HTML for the new book
+        require_once 'generate_static_html.php';
+        generate_static_html_for_book($book_id, $metadata);
+        
         flash_message('Book uploaded successfully');
     } else {
         flash_message('Error saving file');
