@@ -24,4 +24,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Select All functionality for metadata management
+    const selectAllCheckbox = document.getElementById('selectAll');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const checkboxes = document.getElementsByName('selected_books[]');
+            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+        });
+    }
 });

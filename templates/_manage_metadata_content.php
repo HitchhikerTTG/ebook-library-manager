@@ -38,10 +38,3 @@
     </form>
     <?php endif; ?>
 </div>
-
-<script>
-document.getElementById('selectAll').addEventListener('change', function() {
-    const checkboxes = document.getElementsByName('selected_books[]');
-    checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-});
-</script>
