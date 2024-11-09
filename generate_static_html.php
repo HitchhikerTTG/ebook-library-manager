@@ -80,76 +80,112 @@ function generate_book_list_html() {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ebook Library - Complete Collection</title>
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css" rel="stylesheet">
     <link href="../static/css/custom.css" rel="stylesheet">
 </head>
 <body>
     <div class="container py-5">
         <h1 class="mb-4">Complete Book Collection</h1>
-        <div class="row">
-            <div class="col-md-6 mb-4">
+        <div class="row mb-4">
+            <div class="col-md-6">
                 <input type="text" class="form-control" id="searchInput" placeholder="Search books...">
             </div>
         </div>
-        <div class="row" id="bookList">';
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-sort="title">Title <i data-feather="chevron-down"></i></th>
+                        <th class="sortable" data-sort="author">Author <i data-feather="chevron-down"></i></th>
+                        <th class="sortable" data-sort="genre">Genre <i data-feather="chevron-down"></i></th>
+                        <th class="sortable" data-sort="series">Series <i data-feather="chevron-down"></i></th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>';
 
     foreach ($books as $book) {
-        $html .= '
-            <div class="col-md-6 col-lg-4 mb-4 book-card" 
-                 data-title="' . htmlspecialchars($book['title']) . '"
-                 data-author="' . htmlspecialchars($book['author_first'] . ' ' . $book['author_last']) . '"
-                 data-genre="' . htmlspecialchars($book['genre']) . '">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">' . htmlspecialchars($book['title']) . '</h5>
-                        <p class="card-text">
-                            <strong>Author:</strong> ' . htmlspecialchars($book['author_first'] . ' ' . $book['author_last']) . '<br>
-                            <strong>Genre:</strong> ' . htmlspecialchars($book['genre']) . '<br>';
+        $series_info = !empty($book['series']) ? htmlspecialchars($book['series']) . 
+            (!empty($book['series_position']) ? ' #' . htmlspecialchars($book['series_position']) : '') : '';
         
-        if (!empty($book['series'])) {
-            $html .= '<strong>Series:</strong> ' . htmlspecialchars($book['series']);
-            if (!empty($book['series_position'])) {
-                $html .= ' #' . htmlspecialchars($book['series_position']);
-            }
-            $html .= '<br>';
-        }
-
-        $html .= '    </p>
+        $html .= '
+                <tr class="book-row" 
+                    data-title="' . htmlspecialchars($book['title']) . '"
+                    data-author="' . htmlspecialchars($book['author_first'] . ' ' . $book['author_last']) . '"
+                    data-genre="' . htmlspecialchars($book['genre']) . '"
+                    data-series="' . $series_info . '">
+                    <td>' . htmlspecialchars($book['title']) . '</td>
+                    <td>' . htmlspecialchars($book['author_first'] . ' ' . $book['author_last']) . '</td>
+                    <td>' . htmlspecialchars($book['genre']) . '</td>
+                    <td>' . $series_info . '</td>
+                    <td>
                         <div class="btn-group">
-                            <a href="' . htmlspecialchars($book['id']) . '.html" class="btn btn-info">Details</a>
-                            <a href="../?route=download&id=' . urlencode($book['id']) . '" class="btn btn-primary">Download</a>
+                            <a href="' . htmlspecialchars($book['id']) . '.html" class="btn btn-sm btn-info">Details</a>
+                            <a href="../?route=download&id=' . urlencode($book['id']) . '" class="btn btn-sm btn-primary">Download</a>
                         </div>
-                    </div>
-                </div>
-            </div>';
+                    </td>
+                </tr>';
     }
 
     $html .= '
+                </tbody>
+            </table>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Initialize Feather icons
+        feather.replace();
+
+        // Search functionality
         const searchInput = document.getElementById("searchInput");
         if (searchInput) {
             searchInput.addEventListener("input", function(e) {
                 const searchTerm = e.target.value.toLowerCase();
-                const bookCards = document.querySelectorAll(".book-card");
+                const bookRows = document.querySelectorAll(".book-row");
 
-                bookCards.forEach(card => {
-                    const title = card.dataset.title.toLowerCase();
-                    const author = card.dataset.author.toLowerCase();
-                    const genre = card.dataset.genre.toLowerCase();
+                bookRows.forEach(row => {
+                    const title = row.dataset.title.toLowerCase();
+                    const author = row.dataset.author.toLowerCase();
+                    const genre = row.dataset.genre.toLowerCase();
+                    const series = row.dataset.series.toLowerCase();
 
                     if (title.includes(searchTerm) || 
                         author.includes(searchTerm) || 
-                        genre.includes(searchTerm)) {
-                        card.style.display = "block";
+                        genre.includes(searchTerm) ||
+                        series.includes(searchTerm)) {
+                        row.style.display = "";
                     } else {
-                        card.style.display = "none";
+                        row.style.display = "none";
                     }
                 });
             });
         }
+
+        // Sorting functionality
+        const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+        
+        const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+            v1 !== "" && v2 !== "" && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+        )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+        document.querySelectorAll("th.sortable").forEach(th => {
+            const icon = th.querySelector("i");
+            th.addEventListener("click", () => {
+                const table = th.closest("table");
+                const tbody = table.querySelector("tbody");
+                Array.from(tbody.querySelectorAll("tr"))
+                    .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+                    .forEach(tr => tbody.appendChild(tr));
+                
+                // Update sort icons
+                table.querySelectorAll("th i").forEach(i => i.setAttribute("data-feather", "chevron-down"));
+                icon.setAttribute("data-feather", this.asc ? "chevron-up" : "chevron-down");
+                feather.replace();
+            });
+        });
     });
     </script>
 </body>

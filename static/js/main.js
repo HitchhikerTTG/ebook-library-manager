@@ -27,11 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Select All functionality for metadata management
     const selectAllCheckbox = document.getElementById('selectAll');
-    const checkboxes = document.getElementsByName('selected_books[]');
-    
-    if (selectAllCheckbox && checkboxes.length > 0) {
-        selectAllCheckbox.addEventListener('change', function() {
-            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-        });
+    if (selectAllCheckbox) {
+        const checkboxes = document.getElementsByName('selected_books[]');
+        if (checkboxes.length > 0) {
+            selectAllCheckbox.addEventListener('change', function() {
+                checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+            });
+        }
     }
 });
