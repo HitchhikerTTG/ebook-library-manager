@@ -53,6 +53,9 @@ switch ($route) {
     case 'download':
         include 'download.php';
         break;
+    case 'manage_metadata':
+        include 'manage_metadata.php';
+        break;
     default:
         $books = get_books();
         include 'templates/library.php';

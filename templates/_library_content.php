@@ -3,6 +3,9 @@
         <input type="text" class="form-control" id="searchInput" placeholder="Search books...">
     </div>
     <div class="col-md-6 text-end">
+        <a href="?route=manage_metadata" class="btn btn-info me-2">
+            Manage Metadata
+        </a>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
             Upload Book
         </button>
