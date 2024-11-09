@@ -2,8 +2,8 @@
 session_start();
 
 // Create necessary directories
-if (!file_exists('books')) {
-    mkdir('books', 0777, true);
+if (!file_exists('_ksiazki')) {
+    mkdir('_ksiazki', 0777, true);
 }
 if (!file_exists('metadata')) {
     mkdir('metadata', 0777, true);

@@ -16,7 +16,7 @@ if (!file_exists($metadata_file)) {
 
 try {
     $metadata = json_decode(file_get_contents($metadata_file), true);
-    $book_file = 'books/' . $metadata['filename'];
+    $book_file = '_ksiazki/' . $metadata['filename'];
     
     if (file_exists($book_file)) {
         unlink($book_file);
