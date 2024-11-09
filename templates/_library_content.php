@@ -3,6 +3,9 @@
         <input type="text" class="form-control" id="searchInput" placeholder="Search books...">
     </div>
     <div class="col-md-6 text-end">
+        <a href="?route=generate_static" class="btn btn-info me-2">
+            Generate Static HTML
+        </a>
         <a href="?route=manage_metadata" class="btn btn-info me-2">
             Manage Metadata
         </a>
