@@ -10,7 +10,7 @@ function validate_metadata($metadata) {
 }
 
 function scan_and_sync_metadata() {
-    $books = glob('/nirski/_ksiazki/*.mobi');
+    $books = glob('../nirski/_ksiazki/*.mobi');
     $metadata_files = glob('metadata/*.json');
     $metadata_map = [];
     
