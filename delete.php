@@ -27,6 +27,10 @@ try {
     }
     unlink($metadata_file);
     
+    // Regenerate the book list after deletion
+    require_once 'generate_static_html.php';
+    generate_book_list_html();
+    
     flash_message('Book deleted successfully');
 } catch (Exception $e) {
     flash_message('Error deleting book');

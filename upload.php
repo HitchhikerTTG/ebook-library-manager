@@ -38,9 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             json_encode($metadata, JSON_PRETTY_PRINT)
         );
         
-        // Generate static HTML for the new book
+        // Generate static HTML for the new book and update the book list
         require_once 'generate_static_html.php';
         generate_static_html_for_book($book_id, $metadata);
+        generate_book_list_html();
         
         flash_message('Book uploaded successfully');
     } else {
