@@ -1,0 +1,21 @@
+.book-card {
+    transition: transform 0.2s;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+}
+
+.card {
+    height: 100%;
+    border: 1px solid var(--bs-border-color);
+}
+
+.btn-group {
+    width: 100%;
+    margin-top: auto;
+}
+
+.btn-group .btn {
+    flex: 1;
+}
