@@ -1,48 +1,16 @@
 import os
 import json
 import uuid
-from functools import wraps
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, session
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here'  # Change in production
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'your-secret-key-here')
 
 # Create necessary directories if they don't exist
 os.makedirs('books', exist_ok=True)
 os.makedirs('metadata', exist_ok=True)
 
-# Admin credentials (in production, use proper user management)
-ADMIN_USERNAME = 'admin'
-ADMIN_PASSWORD = generate_password_hash('admin123')
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'logged_in' not in session:
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
-    return decorated_function
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        
-        if username == ADMIN_USERNAME and check_password_hash(ADMIN_PASSWORD, password):
-            session['logged_in'] = True
-            return redirect(url_for('library'))
-        flash('Invalid credentials')
-    return render_template('login.html')
-
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    return redirect(url_for('login'))
-
 @app.route('/')
-@login_required
 def library():
     books = []
     for filename in os.listdir('metadata'):
@@ -54,7 +22,6 @@ def library():
     return render_template('library.html', books=books)
 
 @app.route('/upload', methods=['POST'])
-@login_required
 def upload():
     if 'book' not in request.files:
         flash('No file selected')
@@ -89,7 +56,6 @@ def upload():
     return redirect(url_for('library'))
 
 @app.route('/download/<book_id>')
-@login_required
 def download(book_id):
     try:
         with open(os.path.join('metadata', f'{book_id}.json')) as f:
@@ -100,7 +66,6 @@ def download(book_id):
         return redirect(url_for('library'))
 
 @app.route('/edit/<book_id>', methods=['GET', 'POST'])
-@login_required
 def edit_metadata(book_id):
     try:
         with open(os.path.join('metadata', f'{book_id}.json')) as f:
@@ -128,7 +93,6 @@ def edit_metadata(book_id):
         return redirect(url_for('library'))
 
 @app.route('/delete/<book_id>')
-@login_required
 def delete_book(book_id):
     try:
         with open(os.path.join('metadata', f'{book_id}.json')) as f:
